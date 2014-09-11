@@ -1,0 +1,103 @@
+# id3.py
+# -------------------------
+# Winter 2013; Alex Safatli
+# -------------------------
+# A program that carries out
+# the ID3 algorithm on a
+# given data file.
+
+EXECUTION AND FUNCTION:
+
+To execute the program, on the command line, enter the following while
+in this directory on Unix. Similarly, the file can be run as an executable in
+Unix in a bash environment or on Windows by opening using the Python console.
+
+$ python id3.py
+
+Like the demo application found on ~prof4144 on bluenose, this application will
+ask for the path to the data file to be read and then for what binary attribute to use 
+as a target class. Error checking is present and will prompt the user on invalid input 
+where appropriate.
+
+Immediately following the receiving of this input, ID3 decision tree analysis will be carried
+out on the data file given, with error messages given if the format of that data
+file differs from the one given in the assignment instructions, simply skipping lines
+that are not parse-able.
+
+On completion of the algorithm, the decision tree, output as if-then logic, will be placed 
+into an external file named "Rules". If you wish to change the name of this file, edit the 
+appropriate constant at the top of the Python file (RULES_FILE). The format of this file is
+extremely similar to the one provided as an example. To read the file, open it with a
+text editor or use the below command on Unix.
+
+$ more Rules
+
+DESIGN:
+
+- What is this program for?
+
+  This program is an implementation of decision tree classification
+  via the ID3 algorithm, written in Python for the CSCI4144 Dalhousie University
+  course.
+
+- What is the general design?
+
+  The program is designed such that a main function carries out receiving and parsing
+  of both stdin input and input from the data file. Input parameters are parsed as strings
+  or integers respectively while the data file is parsed as single data structure: a
+  dictionary (or hash table) that has a key-value pair where keys are attributes and values
+  are a vector of all transaction values for that attribute.
+
+  When all data is encapsulated as such, the data is passed off, along with the appropriate
+  target class, to an id3 class that handles the generation of the decision tree through the
+  ID3 algorithm: (1) entropy for the target class is calculated, and (2) the tree is built
+  by deciding the best decision class at every given instance of the tree nodes. See appropriate
+  comments in the Python file for more information on this.
+
+- Overview of the program code.
+
+  All necessary helper classes and the ID3 analysis class, along with three essential
+  functions for program execution, are contained in one Python file: id3.py.
+
+  There are 20 functions, including main(), that comprise the source code. The following
+  presents all classes and main program functions:
+
+		class id3()			__init__(), entropy(), gain(), bestDecision(),
+		      				buildTree()
+					
+						* Note that buildTree() has a nested function
+						attachBranches() that performs branch joining
+						to attribute nodes.
+
+		class tree()			__init__(), __nextlevel__(), toStringAsLogic()
+
+		class attribute()		__init__(), __eq__(), __ne__(), __str__()
+
+		class branch()			__init__(), getParents(), __iter__()
+
+		
+		loadFile()
+		askForTarget()
+		main()
+  
+  The tree class encapsulates a decision tree.
+  The attribute class encapsulates an attribute node (which partially comprises a tree).
+  The branch class encapsulates a branch node (which partially comprises a tree).
+
+- The following is the program structure.
+
+  main() ----> loadFile()
+  	 ----> askForTarget()
+  	 ----> id3()
+			----> entropy()
+			----> buildTree()
+				----> bestDecision()
+			    	----> attachBranches()
+				----> buildTree()
+			----> bestDecision()
+			    	----> gain()
+			----> gain()
+				----> entropy()
+	----> tree()
+			----> toStringAsLogic()
+			      

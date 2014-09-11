@@ -1,0 +1,107 @@
+# apriori.py
+# -------------------------
+# Winter 2013; Alex Safatli
+# -------------------------
+# A program that carries out
+# the Apriori algorithm on a
+# given set of data files.
+
+EXECUTION AND FUNCTION:
+
+To execute the program, on the command line, enter the following while
+in this directory on Unix. Similarly, the file can be run as an executable in
+Unix in a bash environment or on Windows by opening using the Python console.
+
+$ python apriori.py
+
+Like the demo application found on ~prof4144 on bluenose, this application will
+ask for three input strings from the user: (1) the path to the data file to be read,
+(2) the minimum support rate to be used, and (3) the minimum confidence rate to be used.
+Error checking is present and will prompt the user on invalid input where appropriate.
+
+Immediately following the receiving of this input, the Apriori analysis will be carried
+out on the data file given, with error messages given if the format of that data
+file differs from the one given in the assignment instructions, simply skipping lines
+that are not parse-able.
+
+On completion of the algorithm, the mined rules will be placed into an external file
+named "Rules". If you wish to change the name of this file, edit the appropriate
+constant at the top of the Python file (RULES_FILE). The format of this file is
+extremely similar to the one provided as an example. To read the file, open it with a
+text editor or use the below command on Unix.
+
+$ more Rules
+
+DESIGN:
+
+- What is this program for?
+
+  This program is an implementation of association rule mining
+  via the Apriori algorithm, written in Python for the CSCI4144 Dalhousie University
+  course.
+
+- What is the general design?
+
+  The program is designed such that a main function carries out receiving and parsing
+  of both stdin input and input from the data file. Input parameters are parsed as strings
+  or floats respectively while the data file is parsed as two data structures:
+
+     (a) a list of all headers or attribute titles, and
+     (b) a set of rows or transactions, encapsulated as a "transaction" class
+
+  When all data is encapsulated as such, the data is passed off, along with appropriate
+  rate parameters, to an apriori_analysis class that handles the two main phases of the
+  Apriori association rule mining algorithm: (1) candidate generation and testing, or the
+  itemset finding phase, and (2) the generation of strong association rules. See appropriate
+  comments in the Python file for more information on this.
+
+- Overview of the program code.
+
+  All necessary helper classes and the Apriori analysis class, along with two essential
+  functions for program execution, are contained in one Python file: apriori.py.
+
+  There are 21 functions, including main(), that comprise the source code. The following
+  presents all classes and main program functions:
+
+		class apriori_analysis()	__init__(), get_itemsets(), rule_gen(),
+	   	 				frequent_1itemsets(), apriori_gen(), 
+						has_infrequent_subset(), frequent_subset(),
+						support(), __str__()
+					
+						* Note that apriori_gen() has a nested function
+						join() that performs relational join, and rule_gen()
+						has nested function has_pruned() that applies the
+						pruning rule.
+
+		class item()			__init__(), __eq__(), __ne__(), __hash__(),
+	   	 				__str__()
+
+		class transaction()		__init__()
+
+		class rule()			__init__(), __eq__(), __ne__(), __str__()
+
+		main()
+  
+  The item class encapsulates a header-value pair (i.e. a cell) in the datafile.
+  The transaction class encapsulates a row in the datafile.
+  The rule class encapsulates an association rule.
+
+- The following is the program structure.
+
+  main() ----> apriori_analysis
+			----> get_itemsets()
+				----> frequent_1itemsets()
+			    	----> support()
+				----> apriori_gen()
+			    	----> join()
+				----> has_infrequent_subset()
+			----> frequent_subset()
+			    	----> support()
+			----> rule_gen()
+				----> has_pruned()
+					
+NOTE!! I implemented the pruning rule or "efficiency trick rule" while generating
+rules. Dr. Gao claimed we could get bonus points if this was done. Please see
+function rule_gen() on line 71 for the code. A list is added to whenever a failed
+rule is met and is checked before confidence is ever calculated through set algebra.
+			      

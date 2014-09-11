@@ -1,0 +1,204 @@
+# NB_classifier.py & ID3_classifier.py
+# -----------------------------------------------
+# Winter 2013; Alex Safatli
+# -----------------------------------------------
+# A program that carries out the NB classification on a given data file (furthermore,
+# as bonus, an extension of ID3 algorithm was carried out in order to carry out classif-
+# ication).
+
+EXECUTION AND FUNCTION:
+
+To execute the program(s), on the command line, enter the following while
+in this directory on Unix. Similarly, the file can be run as an executable in
+Unix in a bash environment or on Windows by opening using the Python console.
+
+$ python NB_classifier.py
+$ python ID3_classifier.py
+
+This application will ask for the path to the data files to be read and then for what 
+attribute to use as a target class. Error checking is present and will prompt 
+the user on invalid input where appropriate.
+
+Immediately following the receiving of this input, the Naive Bayes algorithm will be carried
+out on the data files given, with error messages given if the format of that data
+file differs from the one given in the assignment instructions, simply skipping lines
+that are not parse-able. The training file will be TRAINED on and the test-
+ing file will be used to predictions, giving an appropriate accuracy measure when comparing
+to the reference class values.
+
+On completion of the algorithm, the data and predicted values will be placed 
+into an external file named "Result.txt" (or "id3.txt" respectively). If you wish to change 
+the name of this file, edit the appropriate constant at the top of the Python file. To read 
+the file, open it with a text editor or use the below command on Unix.
+
+$ more Result.txt
+$ more id3.txt
+
+DATA CLEANING (data2):
+
+- How was data cleaned?
+
+  Data was cleaned for the data2 set by removing redundant transactions (e.g., same lines)
+  and all lines that had conflicting target class values (all other attributes being the
+  same) were removed by considering which was predominant (e.g., if there were 3 lines 
+  supporting one target class value and only 1 line supporting another, the former was
+  chosen for the target class value for that corresponding vector of attribute values).
+
+DESIGN (NB_classifier):
+
+- What is this program for?
+
+  This program is an implementation of Naive Bayesian classification
+  via the NB algorithm (along with an ID3-based one), written in Python for 
+  the CSCI4144 Dalhousie University course.
+
+- What is the general design?
+
+  The program is designed such that a main function carries out receiving and parsing
+  of both stdin input and input from the data file. Input parameters are parsed as strings
+  or integers respectively while a data file is parsed as single data structure: a
+  dictionary (or hash table) that has a key-value pair where keys are attributes and values
+  are a vector of all transaction values for that attribute.
+
+  When all data is encapsulated as such, the data is passed off, along with the appropriate
+  target class, to an naivebayesian class that handles learning and prediction through the
+  NB algorithm: (1) the training data is used to calculate prior probabilities, and (2) the 
+  testing data is used to calculate posterior probabilities in order to predict a value. See 
+  appropriate comments in the Python file for more information on this.
+
+- Overview of the program code.
+
+  All necessary helper classes and the NB analysis class, along with four essential
+  functions for program execution, are contained in one Python file: NB_classifier.py.
+
+  There are 20 functions, including main(), that comprise the source code. The following
+  presents all classes and main program functions:
+
+		class naivebayesian()	__init__(), calcPriorForAttr(), calcPostsForTrans(), 
+					learn(), predict()
+			
+		loadFile()
+		writeFile()
+		askForTarget()
+		main()
+
+- The following is the program structure.
+
+  main() ----> loadFile()
+  	 ----> askForTarget()
+  	 ----> naivebayesian()
+			----> learn()
+			        ----> calcPriorForAttr()
+			----> predict()
+				----> calcPostsForTrans()
+
+DESIGN (ID3_classifier):
+
+- What is this program for?
+
+  This program is an implementation of training/testing NB-like classification
+  via the ID3 algorithm, written in Python for the CSCI4144 Dalhousie University
+  course.
+
+- What is the general design?
+
+  The program is designed such that a main function carries out receiving and parsing
+  of both stdin input and input from data files. Input parameters are parsed as strings
+  or integers respectively while each data file is parsed as single data structure: a
+  dictionary (or hash table) that has a key-value pair where keys are attributes and values
+  are a vector of all transaction values for that attribute.
+
+  When all data is encapsulated as such, the data is passed off, along with the appropriate
+  target class, to an id3 class that handles the generation of the decision tree through the
+  ID3 algorithm: (1) entropy for the target class is calculated, and (2) the tree is built
+  by deciding the best decision class at every given instance of the tree nodes. See appropriate
+  comments in the Python file for more information on this.
+  
+  Following this, classification is done through a classifier class. This, along with one
+  further function in the tree function, are the sources of EXTENSION for this Assignment.
+
+- Overview of the program code.
+
+  All necessary helper classes and the ID3 analysis class, along with three essential
+  functions for program execution, are contained in one Python file: id3.py.
+
+  There are 23 functions, including main(), that comprise the source code. The following
+  presents all classes and main program functions:
+
+		class id3()			__init__(), entropy(), gain(), bestDecision(),
+		      				buildTree()
+					
+						* Note that buildTree() has a nested function
+						attachBranches() that performs branch joining
+						to attribute nodes.
+
+		class tree()			__init__(), __nextlevel__(), toStringAsLogic(), 
+						getTargetValue()
+
+		class attribute()		__init__(), __eq__(), __ne__(), __str__()
+
+		class branch()			__init__(), getParents(), __iter__()
+		
+		class classifier()		__init__(), predict()
+		
+		writeFile()
+		loadFile()
+		askForTarget()
+		main()
+  
+  The tree class encapsulates a decision tree.
+  The attribute class encapsulates an attribute node (which partially comprises a tree).
+  The branch class encapsulates a branch node (which partially comprises a tree).
+  The classifier class encapsulates the extension of the ID3 algorithm carrying out classification.
+
+- The following is the program structure.
+
+  main() ----> loadFile()
+  	 ----> askForTarget()
+  	 ----> id3()
+			----> entropy()
+			----> buildTree()
+				----> bestDecision()
+			    	----> attachBranches()
+				----> buildTree()
+			----> bestDecision()
+			    	----> gain()
+			----> gain()
+				----> entropy()
+	----> tree()
+			----> toStringAsLogic()	      
+	----> classifier()
+			----> predict()
+				----> tree.getTargetValue()
+				
+CLASSIFIER COMPARISON:
+
+- What dataset was used from the machine learning repository?
+
+  dataset_fog_release was used (2013-03-07:	Daphnet Freezing of Gait).
+  
+- What were the results?
+
+  Series S01 and S07 were investigated from the dataset and the corresponding resultant 
+  files from both classifiers were analyzed for accuracy. They are shown below for compl-
+  etion:
+  
+  Series S01:
+  	NB  -- 653/52095 for target attribute trunk_horiz (computation time: ~10 min)
+  	ID3 -- 746/52095 for target attribute trunk_horiz (computation time: ~4 hrs)
+  Series S02:
+  	NB   -- 5024/50335 for target attribute ankle_lateral (computation time: ~3 hrs)
+  	ID3  -- 36124/50335 for target attribute ankle_lateral (computation time: ~1 hrs)
+  	
+- What can be said about these results?
+
+  The above show that the ID3 classifier appears to perform better (but take longer) for
+  most data sets, but both classifiers were otherwise performing fairly poorly in terms
+  of accuracy for datasets that contained a great deal of unique values.
+  
+  The strength of the NB method seems to be its ease of implementation and speed, but it
+  appears to be slightly less accurate in its results. On the other hand, the ID3 classifier
+  takes a greater deal of time (by profiling, it seems to be spending the most time in cons-
+  tructing a decision tree), is more difficult to implement, but comes out ahead, for the
+  most part, with its accuracy.
+  
